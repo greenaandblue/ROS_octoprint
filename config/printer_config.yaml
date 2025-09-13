@@ -1,0 +1,41 @@
+# OctoPrint配置
+octoprint:
+  host: "octopi.local"
+  port: 80
+  api_key: "YOUR_API_KEY_HERE"  # 替换为你的实际API密钥
+
+# 打印机参数
+printer:
+  max_speed: 3000        # 最大移动速度 (mm/min)
+  default_speed: 1500    # 默认移动速度 (mm/min)
+  acceleration: 500      # 加速度
+  
+  # 打印区域限制
+  build_area:
+    x_min: 0
+    x_max: 200
+    y_min: 0
+    y_max: 200
+    z_min: 0
+    z_max: 200
+
+# 常用G-code指令模板
+gcode_templates:
+  home_all: "G28"
+  home_xy: "G28 X Y"
+  home_z: "G28 Z"
+  disable_motors: "M84"
+  enable_motors: "M17"
+  set_absolute: "G90"
+  set_relative: "G91"
+  
+  # 加热指令
+  heat_extruder: "M104 S{temperature}"
+  heat_bed: "M140 S{temperature}"
+  wait_extruder: "M109 S{temperature}"
+  wait_bed: "M190 S{temperature}"
+  
+  # 安全指令
+  emergency_stop: "M112"
+  pause: "M25"
+  resume: "M24"

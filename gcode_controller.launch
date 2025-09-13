@@ -1,0 +1,20 @@
+<launch>
+    <!-- G-code Controller节点 -->
+    <node name="gcode_controller" pkg="gcode_controller" type="gcode_controller_node.py" output="screen">
+        <!-- OctoPrint配置参数 -->
+        <param name="octoprint_host" value="octopi.local" />
+        <param name="octoprint_port" value="80" />
+        <!-- 重要：替换为你的实际API密钥 -->
+        <param name="api_key" value="YOUR_API_KEY_HERE" />
+    </node>
+    
+    <!-- 可选：启动键盘控制节点用于测试 -->
+    <node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" if="$(arg use_keyboard_control)">
+        <param name="speed" value="10.0"/>
+        <param name="turn" value="1.0"/>
+        <remap from="cmd_vel" to="cmd_vel"/>
+    </node>
+    
+    <!-- 启动参数 -->
+    <arg name="use_keyboard_control" default="false"/>
+</launch>

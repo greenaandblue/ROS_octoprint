@@ -1,0 +1,56 @@
+完整的开发流程
+
+步骤1：在MacBook上准备包结构
+# 创建包目录结构
+mkdir -p gcode_controller/{scripts,launch,config,src/gcode_controller}
+
+# 创建所有必要文件
+cd gcode_controller
+
+# 复制我提供的代码到对应位置
+# - gcode_controller_node.py -> scripts/
+# - test_gcode_controller.py -> scripts/
+# - package.xml -> 根目录
+# - CMakeLists.txt -> 根目录
+# - setup.py -> 根目录
+# - *.launch -> launch/
+# - *.yaml -> config/
+步骤2：运行兼容性检查
+bash# 在包根目录运行
+python3 check_ros_compatibility.py
+步骤3：修复任何问题
+根据检查结果修复问题，主要注意：
+
+文件权限：
+
+bashchmod +x scripts/*.py
+
+Python依赖：
+
+bashpip3 install requests  # 确保在MacBook上也能测试
+
+API密钥配置：
+编辑 launch/gcode_controller.launch，替换 YOUR_API_KEY_HERE
+
+步骤4：转移到Ubuntu
+
+bash# 在MacBook上打包
+tar -czf gcode_controller.tar.gz gcode_controller/
+
+# 传输到Ubuntu（使用scp、U盘等方式）
+scp gcode_controller.tar.gz user@ubuntu-machine:~/
+
+# 在Ubuntu上解压
+cd ~/
+tar -xzf gcode_controller.tar.gz
+cd gcode_controller
+./setup_ubuntu.sh  # 自动设置脚本
+步骤5：在Ubuntu上测试
+bash# 启动ROS核心（如果没有运行）
+roscore &
+
+# 启动节点
+roslaunch gcode_controller gcode_controller.launch
+
+# 在另一个终端测试
+rosrun gcode_controller test_gcode_controller.py interactive
