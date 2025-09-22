@@ -15,25 +15,20 @@ class GCodeController:
         rospy.init_node('gcode_controller', anonymous=True)
         
         # 从参数服务器获取配置
-        self.octoprint_host: str = rospy.get_param('~octoprint_host', 'octopi.local') # URL可能也有问题，之前用的是Octopi_URL = "http://octopi.local/api/printer/command"
-        self.octoprint_port: int = rospy.get_param('~octoprint_port', 80) # 这个端口应该是有问题的，可能是5000而不是80
-        self.api_key: str = rospy.get_param('~api_key', '') # 获取API key, 没有就用空代替
+        self.octoprint_host: str = rospy.get_param('~octoprint_host', 'octopi.local')
+        self.octoprint_port: Optional[int] = rospy.get_param('~octoprint_port', None) # 直接把类型提示去掉，就不会invalid syntax
         
-        '''
-        常见的OctoPrint配置:
-
-        标准配置: http://octopi.local/api （无端口）
-        带端口: http://octopi.local:5000/api
-        IP地址: http://192.168.1.xxx/api
-        '''
-        if not self.api_key:
-            rospy.logerr("API key is required! Set it via parameter ~api_key")
-            return
+        # 获取API密钥，如果参数不存在则使用默认值
+        default_api_key = 'kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k'
+        self.api_key: str = rospy.get_param('~api_key', default_api_key)
         
-        # API端点
-        self.base_url: str = f"http://{self.octoprint_host}:{self.octoprint_port}/api"
+        # API端点 - 根据你的成功测试，不使用端口号
+        if self.octoprint_port and self.octoprint_port != 80:
+            self.base_url: str = f"http://{self.octoprint_host}:{self.octoprint_port}/api"
+        else:
+            self.base_url: str = f"http://{self.octoprint_host}/api"
         self.headers: Dict[str, str] = {
-            'X-Api-Key': self.api_key,
+            'X-Api-Key': self.api_key,  # 使用获取到的API密钥
             'Content-Type': 'application/json'
         }
         
@@ -57,21 +52,40 @@ class GCodeController:
         self.status_timer = rospy.Timer(rospy.Duration(2.0), self.publish_status)
         
         rospy.loginfo("G-code Controller initialized")
-        rospy.loginfo(f"Connected to OctoPrint at {self.octoprint_host}:{self.octoprint_port}")
+        rospy.loginfo(f"Base URL: {self.base_url}")
+        rospy.loginfo(f"Using API key: {self.api_key[:8]}...")  # 只显示前8位用于调试
         
         self.test_connection()
 
     def test_connection(self) -> bool:
         """测试与OctoPrint的连接"""
         try:
-            response = requests.get(f"{self.base_url}/version", headers=self.headers, timeout=5)
+            # 首先测试version端点
+            version_url = f"{self.base_url}/version"
+            rospy.loginfo(f"Testing connection to: {version_url}")
+            
+            response = requests.get(version_url, headers=self.headers, timeout=10)
+            rospy.loginfo(f"Version endpoint response: Status={response.status_code}")
+            
             if response.status_code == 200:
                 version_info: Dict[str, Any] = response.json()
                 rospy.loginfo(f"Connected to OctoPrint version: {version_info.get('server', 'Unknown')}")
+                
+                # 然后测试printer端点
+                printer_url = f"{self.base_url}/printer"
+                printer_response = requests.get(printer_url, headers=self.headers, timeout=10)
+                rospy.loginfo(f"Printer endpoint response: Status={printer_response.status_code}")
+                
                 return True
             else:
-                rospy.logerr(f"Failed to connect to OctoPrint. Status: {response.status_code}")
+                rospy.logerr(f"Failed to connect to OctoPrint.")
+                rospy.logerr(f"Status: {response.status_code}")
+                rospy.logerr(f"Response: {response.text}")
                 return False
+                
+        except requests.exceptions.RequestException as e:
+            rospy.logerr(f"Connection test failed with request error: {str(e)}")
+            return False
         except Exception as e:
             rospy.logerr(f"Connection test failed: {str(e)}")
             return False
@@ -98,7 +112,7 @@ class GCodeController:
         
         if has_linear_movement or abs(msg.angular.z) > 0.01:
             # 构建G1移动指令
-            gcode_parts: list[str] = ["G91", "G1"]  # G91设置相对定位，G1线性移动
+            gcode_parts: list[str] = ["G1"]  # G1线性移动
             
             if abs(msg.linear.x) > 0.01:
                 gcode_parts.append(f"X{msg.linear.x:.2f}")

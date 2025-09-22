@@ -2,7 +2,7 @@
 octoprint:
   host: "octopi.local"
   port: 80
-  api_key: "YOUR_API_KEY_HERE"  # 替换为你的实际API密钥
+  api_key: "kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k"  # 替换为你的实际API密钥
 
 # 打印机参数
 printer:

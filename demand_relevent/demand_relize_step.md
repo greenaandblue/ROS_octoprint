@@ -30,8 +30,8 @@ pip3 install requests octopi-client
 生成新的API密钥并保存（类似：1234567890ABCDEF1234567890ABCDEF）
 
 2.3 备注
-*** Octopi_URL = "http://octopi.local/api/printer/command" ***
-*** Global_API_key = "kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k" ***
+### *** Octopi_URL = "http://octopi.local/api/printer/command" ***
+### *** Global_API_key = "kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k" ***
 
 # 第三步：创建ROS包结构
 进入你的ROS工作空间

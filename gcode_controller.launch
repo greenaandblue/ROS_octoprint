@@ -5,7 +5,7 @@
         <param name="octoprint_host" value="octopi.local" />
         <param name="octoprint_port" value="80" />
         <!-- 重要：替换为你的实际API密钥 -->
-        <param name="api_key" value="YOUR_API_KEY_HERE" />
+        <param name="api_key" value="kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k" />
     </node>
     
     <!-- 可选：启动键盘控制节点用于测试 -->
