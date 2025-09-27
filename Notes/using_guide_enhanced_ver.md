@@ -17,7 +17,8 @@ pythonclass PrinterState(Enum):
 pythonOCTOPRINT_URL = "http://192.168.1.100"  # 你的OctoPrint地址
 API_KEY = "YOUR_API_KEY_HERE"  # 你的API密钥
 ## 2. 运行交互模式
-bashpython gcode_sender_enhanced.py
+python gcode_sender_enhanced.py
+python3 src/octoprint_ros/scripts/enhanced_gcode_sender
 ## 3. 可用命令
 
 single G28 - 发送单条指令
@@ -31,6 +32,7 @@ status - 查看打印机状态
 ## 4. 编程接口
 pythonsender = GCodeSender("http://192.168.1.100", "YOUR_API_KEY")
 
+下面说的是函数，不能当作交互行的指令用：
 ### 发送单条指令
 sender.send_single_command("G28")
 
