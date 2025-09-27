@@ -2,19 +2,21 @@
 # -*- coding: utf-8 -*-
 
 """
-G-code文件逐行处理与OctoPrint控制器
-支持自动读取G-code文件并通过OctoPrint API逐行发送命令到3D打印机
+告诉系统用 Python3 来运行这个脚本
+指定源码文件编码为 UTF-8(防止中文注释报错）。
 """
 
-import requests
-import json
-import time
-import logging
-import os
+import requests # 发送 HTTP 请求，用于与 OctoPrint API 通信
+import json # 处理 JSON 数据（API 请求和响应）
+import time # 延时、计时
+import logging # rezhi
+import os # lujing
 from typing import List, Dict, Optional, Generator
-from enum import Enum
-import threading
-from datetime import datetime
+from enum import Enum # 枚举类，用来定义打印机状态
+import threading # 多线程（这里虽然导入了，但代码没用到）
+from datetime import datetime # 时间记录（可以用于日志/时间戳）
+
+# 这个文件要和脚本一起跑，应为没办法喝命令行交互，要通过脚本调动pause_processing()`、`resume_processing()等函数来实现暂停等功能
 
 
 class PrinterState(Enum):
@@ -251,12 +253,12 @@ class GCodeController:
             bool: 处理是否成功完成
         """
         if not self.validate_connection():
-            self.logger.error("无法连接到OctoPrint，终止处理")
+            self.logger.error("无法连接到OctoPrint,终止处理")
             return False
         
         # 等待打印机空闲
         if not self.wait_for_idle():
-            self.logger.error("打印机未处于空闲状态，无法开始处理G-code文件")
+            self.logger.error("打印机未处于空闲状态,无法开始处理G-code文件")
             return False
         
         self.logger.info(f"开始处理G-code文件: {file_path}")
@@ -268,7 +270,7 @@ class GCodeController:
             
             for gcode_line in self.read_gcode_file(file_path):
                 if self._stop_requested:
-                    self.logger.info("收到停止请求，终止G-code处理")
+                    self.logger.info("收到停止请求,终止G-code处理")
                     break
                 
                 # 检查暂停请求
@@ -337,18 +339,18 @@ class GCodeController:
 
 
 def main():
-    """主函数示例"""
+    """主函数"""
     # 配置参数
-    OCTOPRINT_URL = "http://octopi.local/api/printer/command"  
-    API_KEY = "kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k"  # 修改为你的API密钥
-    GCODE_FILE = "/path/to/your/gcode/file.gcode"  # 修改为你的G-code文件路径
+    OCTOPRINT_URL = "http://octopi.local"  
+    API_KEY = "kZhM3w7vBAME6vEzF2iEIh1BLTa-8TnJSXSBa50uy1k"  # 修改为API密钥
+    GCODE_FILE = "/path/to/your/gcode/file.gcode"  # 修改为G-code文件路径
     
     # 创建控制器
     controller = GCodeController(OCTOPRINT_URL, API_KEY)
     
     # 验证连接
     if not controller.validate_connection():
-        print("无法连接到OctoPrint，请检查URL和API密钥")
+        print("无法连接到OctoPrint,请检查URL和API密钥")
         return
     
     try:
@@ -360,12 +362,12 @@ def main():
         )
         
         if success:
-            print("G-code文件处理完成！")
+            print("G-code文件处理完成")
         else:
-            print("G-code文件处理失败，请查看日志")
+            print("G-code文件处理失败,请查看日志")
             
     except KeyboardInterrupt:
-        print("\n收到中断信号，停止处理...")
+        print("\n收到中断信号,停止处理...")
         controller.emergency_stop()
     except Exception as e:
         print(f"处理过程中发生错误: {e}")

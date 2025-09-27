@@ -7,7 +7,7 @@ mkdir -p gcode_controller/{scripts,launch,config,src/gcode_controller}
 # 创建所有必要文件
 cd gcode_controller
 
-# 复制我提供的代码到对应位置
+# 复制代码到对应位置
 # - gcode_controller_node.py -> scripts/
 # - test_gcode_controller.py -> scripts/
 # - package.xml -> 根目录
