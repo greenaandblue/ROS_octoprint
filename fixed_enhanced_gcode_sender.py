@@ -126,7 +126,7 @@ class GCodeSender:
             # 检查是否有halt状态
             state_text = status.get('state', {}).get('text', '').lower()
             if 'halt' in state_text or 'kill' in state_text or 'emergency' in state_text:
-                logger.error(f"⚠️ 检测到打印机紧急停止状态: {state_text}")
+                logger.error(f"检测到打印机紧急停止状态: {state_text}")
                 self.state = PrinterState.HALTED
                 self.stop_event.set()
             
@@ -167,12 +167,12 @@ class GCodeSender:
             if tool_target > 0 and tool_actual > 0:
                 temp_diff = abs(tool_actual - tool_target)
                 if temp_diff > 15:  # 温差超过15度
-                    logger.warning(f"⚠️ 热端温度异常: 实际={tool_actual}°C, 目标={tool_target}°C, 差值={temp_diff}°C")
+                    logger.warning(f"热端温度异常: 实际={tool_actual}°C, 目标={tool_target}°C, 差值={temp_diff}°C")
             
             if bed_target > 0 and bed_actual > 0:
                 temp_diff = abs(bed_actual - bed_target)
                 if temp_diff > 10:  # 热床温差超过10度
-                    logger.warning(f"⚠️ 热床温度异常: 实际={bed_actual}°C, 目标={bed_target}°C, 差值={temp_diff}°C")
+                    logger.warning(f"热床温度异常: 实际={bed_actual}°C, 目标={bed_target}°C, 差值={temp_diff}°C")
             
             return {
                 'tool0': tool_temp,
@@ -224,12 +224,12 @@ class GCodeSender:
         
         # 危险指令检查
         if skip_dangerous and self.is_dangerous_command(command):
-            logger.warning(f"🚫 跳过危险指令: {command}")
+            logger.warning(f"跳过危险指令: {command}")
             return True
         
         # 谨慎指令记录
         if self.is_careful_command(command):
-            logger.info(f"⚠️ 发送谨慎指令: {command}")
+            logger.info(f"发送谨慎指令: {command}")
         
         try:
             data = {"commands": [command]}
@@ -242,12 +242,12 @@ class GCodeSender:
             
             # 重置错误计数
             self.error_count = 0
-            logger.debug(f"✓ 指令发送成功: {command}")
+            logger.debug(f"指令发送成功: {command}")
             return True
             
         except requests.exceptions.RequestException as e:
             self.error_count += 1
-            logger.error(f"❌ 指令发送失败 '{command}': {e} ({self.error_count}/{self.max_errors})")
+            logger.error(f"指令发送失败 '{command}': {e} ({self.error_count}/{self.max_errors})")
             
             if self.error_count >= self.max_errors:
                 logger.error("连续发送失败过多，停止操作")
@@ -276,12 +276,12 @@ class GCodeSender:
                 
                 if skip_dangerous and self.is_dangerous_command(cmd):
                     skipped_count += 1
-                    logger.debug(f"🚫 跳过危险指令: {cmd}")
+                    logger.debug(f"跳过危险指令: {cmd}")
                     continue
                 
                 if self.is_careful_command(cmd):
                     careful_count += 1
-                    logger.debug(f"⚠️ 谨慎指令: {cmd}")
+                    logger.debug(f"谨慎指令: {cmd}")
                 
                 valid_commands.append(cmd)
             
@@ -321,7 +321,7 @@ class GCodeSender:
             
         except requests.exceptions.RequestException as e:
             self.error_count += 1
-            logger.error(f"❌ 批量发送失败: {e} ({self.error_count}/{self.max_errors})")
+            logger.error(f"批量发送失败: {e} ({self.error_count}/{self.max_errors})")
             
             if self.error_count >= self.max_errors:
                 logger.error("连续发送失败过多，停止操作")
@@ -410,7 +410,7 @@ class GCodeSender:
         self.error_count = 0
         self.state = PrinterState.RUNNING
         
-        logger.info(f"📄 文件总行数: {self.total_lines}")
+        logger.info(f"文件总行数: {self.total_lines}")
         
         # 启动监控线程
         self.monitor_thread = threading.Thread(target=self.printer_monitor_worker, daemon=True)
@@ -429,7 +429,7 @@ class GCodeSender:
             while (self.gcode_buffer or has_more_data) and not self.stop_event.is_set():
                 # 检查是否被紧急停止
                 if self.state == PrinterState.HALTED:
-                    logger.error("🚨 检测到紧急停止，中断发送")
+                    logger.error("检测到紧急停止，中断发送")
                     break
                 
                 # 等待恢复信号
@@ -450,7 +450,7 @@ class GCodeSender:
                         
                         if not success:
                             consecutive_errors += 1
-                            logger.error(f"❌ 发送失败 (连续错误: {consecutive_errors})")
+                            logger.error(f"发送失败 (连续错误: {consecutive_errors})")
                             
                             if consecutive_errors >= 3:
                                 logger.error("连续发送失败，停止执行")
@@ -487,7 +487,7 @@ class GCodeSender:
                 logger.info(f"✅ 文件处理完成: {self.current_line}/{self.total_lines} 行读取，{self.processed_lines} 条指令已处理")
                 
         except Exception as e:
-            logger.error(f"💥 发送过程中出错: {e}")
+            logger.error(f"发送过程中出错: {e}")
             self.state = PrinterState.ERROR
     
     def start_file_print(self, file_path: str):
@@ -513,7 +513,7 @@ class GCodeSender:
     
     def emergency_reset(self):
         """紧急复位 - 尝试恢复打印机"""
-        logger.info("🔄 尝试紧急复位...")
+        logger.info("尝试紧急复位...")
         
         try:
             # 发送软复位
@@ -533,12 +533,12 @@ class GCodeSender:
             )
             
             if response.status_code == 204:
-                logger.info("✅ 紧急复位成功，请检查打印机状态")
+                logger.info("紧急复位成功，请检查打印机状态")
                 self.state = PrinterState.IDLE
                 self.error_count = 0
                 return True
             else:
-                logger.error("❌ 紧急复位失败")
+                logger.error("紧急复位失败")
                 return False
                 
         except Exception as e:
@@ -550,21 +550,21 @@ class GCodeSender:
         if self.state == PrinterState.RUNNING:
             self.pause_event.clear()
             self.state = PrinterState.PAUSED
-            logger.info("⏸️ 本地暂停成功")
+            logger.info("本地暂停成功")
     
     def resume(self):
         """恢复"""
         if self.state == PrinterState.PAUSED:
             self.pause_event.set()
             self.state = PrinterState.RUNNING
-            logger.info("▶️ 本地恢复成功")
+            logger.info("本地恢复成功")
     
     def stop(self):
         """停止"""
         self.stop_event.set()
         self.pause_event.set()
         self.state = PrinterState.STOPPED
-        logger.info("⏹️ 本地停止成功")
+        logger.info("本地停止成功")
     
     def get_progress(self) -> dict:
         """获取进度信息"""
@@ -595,7 +595,7 @@ class GCodeSender:
         
         # 检查是否halt
         if 'halt' in printer_state.lower():
-            logger.error("🚨 检测到HALT状态！需要手动重置打印机")
+            logger.error("检测到HALT状态！需要手动重置打印机")
             logger.info("解决步骤:")
             logger.info("1. 断开并重新连接打印机USB")
             logger.info("2. 或使用 'reset' 命令尝试软复位")
@@ -623,7 +623,7 @@ class GCodeSender:
     
     def close(self):
         """清理资源"""
-        logger.info("🔄 正在清理资源...")
+        logger.info("正在清理资源...")
         self.stop()
         
         if self.sender_thread:
@@ -641,7 +641,7 @@ def interactive_mode():
     
     sender = GCodeSender(OCTOPRINT_URL, API_KEY)
     
-    print("=== 🛡️ Enhanced G-code Sender v2.2 - 带M112防护 ===")
+    print("=== Enhanced G-code Sender v2.2 - 带M112防护 ===")
     print("新增功能:")
     print("- M112紧急停止检测和防护")
     print("- 实时打印机状态监控")
