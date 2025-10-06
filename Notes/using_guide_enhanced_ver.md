@@ -18,11 +18,12 @@ pythonOCTOPRINT_URL = "http://192.168.1.100"  # 你的OctoPrint地址
 API_KEY = "YOUR_API_KEY_HERE"  # 你的API密钥
 ## 2. 运行交互模式
 python gcode_sender_enhanced.py
-python3 src/octoprint_ros/scripts/enhanced_gcode_sender
+python3 src/octoprint_ros/scripts/enhanced_gcode_sender.py
 ## 3. 可用命令
 
 single G28 - 发送单条指令
 file /path/to/file.gcode - 开始打印文件
+file src/octoprint_ros/gcode/example.gcode
 pause - 暂停发送
 resume - 恢复发送
 stop - 停止发送
