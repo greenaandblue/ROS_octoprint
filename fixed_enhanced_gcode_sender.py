@@ -3,6 +3,7 @@
 """
 Enhanced G-code Sender for OctoPrint
 增加了M112错误检测和防护机制
+这个成功了，可以正常打印
 """
 
 import requests
@@ -388,7 +389,7 @@ class GCodeSender:
     
     def sender_worker(self, file_path: str):
         """发送器工作线程"""
-        logger.info(f"🚀 开始处理文件: {file_path}")
+        logger.info(f"开始处理文件: {file_path}")
         
         # 检查文件
         if not os.path.exists(file_path):
@@ -464,7 +465,7 @@ class GCodeSender:
                         # 进度报告
                         if self.processed_lines % 200 == 0:
                             progress = (self.current_line / self.total_lines) * 100
-                            logger.info(f"📊 进度: {self.current_line}/{self.total_lines} ({progress:.1f}%) - 已处理: {self.processed_lines}")
+                            logger.info(f"进度: {self.current_line}/{self.total_lines} ({progress:.1f}%) - 已处理: {self.processed_lines}")
                 
                 # 重新填充缓冲区
                 if len(self.gcode_buffer) < self.buffer_size // 2 and has_more_data:
@@ -479,12 +480,12 @@ class GCodeSender:
             
             # 最终状态设置
             if self.state == PrinterState.HALTED:
-                logger.error("🚨 文件处理因紧急停止而中断")
+                logger.error("文件处理因紧急停止而中断")
             elif self.stop_event.is_set():
-                logger.info(f"⏹️ 处理已停止: {self.current_line}/{self.total_lines} 行读取，{self.processed_lines} 条指令已处理")
+                logger.info(f"处理已停止: {self.current_line}/{self.total_lines} 行读取，{self.processed_lines} 条指令已处理")
             else:
                 self.state = PrinterState.IDLE
-                logger.info(f"✅ 文件处理完成: {self.current_line}/{self.total_lines} 行读取，{self.processed_lines} 条指令已处理")
+                logger.info(f"文件处理完成: {self.current_line}/{self.total_lines} 行读取，{self.processed_lines} 条指令已处理")
                 
         except Exception as e:
             logger.error(f"发送过程中出错: {e}")
