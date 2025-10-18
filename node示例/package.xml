@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>gcode_sender</name>
+  <version>1.0.0</version>
+  <description>
+    Enhanced G-code Sender with Precise Pause System for OctoPrint
+  </description>
+  
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>MIT</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <!-- Python 3依赖 -->
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>message_runtime</exec_depend>
+  
+  <!-- 构建时依赖 -->
+  <build_depend>message_generation</build_depend>
+  <build_depend>std_msgs</build_depend>
+  
+  <!-- Python包依赖（系统级） -->
+  <exec_depend>python3-requests</exec_depend>
+  
+</package>

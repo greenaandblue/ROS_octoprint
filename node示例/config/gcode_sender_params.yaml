@@ -1,0 +1,21 @@
+# G-code Sender配置参数
+
+# OctoPrint连接配置
+octoprint_url: "http://octopi.local"
+api_key: "YOUR_API_KEY_HERE"  # 请替换为实际的API Key
+
+# 暂停恢复配置
+pause_lift_z: 5.0              # 暂停时Z轴抬升高度(mm)
+pause_retract: 5.0             # 暂停时回抽长度(mm)
+maintain_temp_on_pause: true   # 暂停时是否保持温度
+
+# 发布频率
+publish_rate: 1.0              # 状态发布频率(Hz)
+
+# 超时设置
+response_timeout: 10.0         # 响应超时时间(秒)
+max_errors: 5                  # 最大连续错误数
+max_timeouts: 3                # 最大连续超时数
+
+# 速度控制
+default_speed_multiplier: 1.0  # 默认速度倍率

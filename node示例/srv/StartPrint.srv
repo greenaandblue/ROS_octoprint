@@ -1,0 +1,5 @@
+# 开始打印服务
+string file_path                # G-code文件路径
+---
+bool success                    # 是否成功
+string message                  # 返回消息

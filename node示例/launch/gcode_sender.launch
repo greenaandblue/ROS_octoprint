@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- 参数配置 -->
+  <arg name="octoprint_url" default="http://octopi.local" />
+  <arg name="api_key" default="YOUR_API_KEY_HERE" />
+  <arg name="pause_lift_z" default="5.0" />
+  <arg name="pause_retract" default="5.0" />
+  <arg name="maintain_temp_on_pause" default="true" />
+  <arg name="publish_rate" default="1.0" />
+  
+  <!-- 启动G-code Sender节点 -->
+  <node name="gcode_sender" pkg="gcode_sender" type="gcode_sender_node.py" output="screen">
+    <param name="octoprint_url" value="$(arg octoprint_url)" />
+    <param name="api_key" value="$(arg api_key)" />
+    <param name="pause_lift_z" value="$(arg pause_lift_z)" />
+    <param name="pause_retract" value="$(arg pause_retract)" />
+    <param name="maintain_temp_on_pause" value="$(arg maintain_temp_on_pause)" />
+    <param name="publish_rate" value="$(arg publish_rate)" />
+  </node>
+  
+  <!-- 可选: 启动RViz或其他可视化工具 -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find gcode_sender)/config/gcode_sender.rviz" /> -->
+</launch>

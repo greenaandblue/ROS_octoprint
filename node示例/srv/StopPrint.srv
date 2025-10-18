@@ -1,0 +1,4 @@
+# 停止打印服务
+---
+bool success                    # 是否成功
+string message                  # 返回消息
