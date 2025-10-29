@@ -10,10 +10,10 @@ import os
 import time
 import logging
 
-# ❌ 改这里：确保导入路径正确
+# 改这里：确保导入路径正确, 改完文件名记得也要在这里改
 # 如果你的gcode_sender.py在同一目录，这样就可以
 from gcode_sender import GCodeSender
-from pause_test_framework import PausePerformanceTest
+from pause_test_framework_fix import PausePerformanceTest
 
 # 配置日志
 logging.basicConfig(
@@ -67,33 +67,34 @@ def main():
     # 准备测试用例
     testcases = []
     
-    # ❌ 改这里：改成你的实际文件路径
+    # 改这里：改成你的实际文件路径
     
     # 维度1：同一文件，不同行数暂停
     logger.info("\n准备维度1测试用例 (同一文件，不同行数)...")
     testcases += tester.generate_dimension1_testcases(
-        'test_files/medium_test.gcode',  # ❌ 改成你的文件
-        pause_lines=[500, 1000, 2000, 3000]  # ❌ 可选：改成你想测试的行数
+        'test_files/file1.gcode',  # 改成你的文件
+        pause_lines=[500, 1000, 2000, 3000]  # 可选：改成你想测试的行数
     )
     
     # 维度2：同一文件，不同进度百分比暂停
     logger.info("准备维度2测试用例 (同一文件，不同进度)...")
     testcases += tester.generate_dimension2_testcases(
-        'test_files/medium_test.gcode',  # ❌ 改成你的文件
-        pause_percents=[20, 30, 50, 70]  # ❌ 可选：改成你想测试的百分比
+        'test_files/file1.gcode',  # 改成你的文件
+        pause_percents=[20, 30, 50, 70]  # 可选：改成你想测试的百分比
     )
-    
+    '''
     # 维度3：不同文件，相同行数暂停
     logger.info("准备维度3测试用例 (不同文件，相同行数)...")
     testcases += tester.generate_dimension3_testcases(
         [
-            'test_files/small_test.gcode',    # ❌ 改成你的文件
-            'test_files/medium_test.gcode',   # ❌ 改成你的文件
-            'test_files/large_test.gcode'     # ❌ 改成你的文件
+            'test_files/file1.gcode',    # 改成你的文件
+            'test_files/file2.gcode',   # 改成你的文件
+            'test_files/file3.gcode'     # 改成你的文件
+            'test_files/file4.gcode'
         ],
-        pause_line=2000  # ❌ 可选：改成你想测试的行数
+        pause_line=2000  # 可选：改成你想测试的行数
     )
-    
+    '''
     logger.info(f"\n总共准备了 {len(testcases)} 个测试用例")
     logger.info("请确保打印机处于空闲状态，然后按Enter开始测试...")
     input()
@@ -102,15 +103,16 @@ def main():
     try:
         tester.run_all_tests(testcases)
         
-        # ❌ 可选改这里：改成你想要的输出文件名
+        # 可选改这里：改成你想要的输出文件名
+        # 记得吧它改成时间
         logger.info("\n生成测试报告...")
-        tester.generate_report('pause_test_report.json')
-        tester.export_csv('pause_test_results.csv')
+        tester.generate_report('pause_test_report_Oct29.json')
+        tester.export_csv('pause_test_results_Oct29.csv')
         tester.print_summary()
         
         logger.info("\n✓ 测试完全完成！")
-        logger.info(f"  JSON报告: pause_test_report.json")
-        logger.info(f"  CSV数据: pause_test_results.csv")
+        logger.info(f"  JSON报告: pause_test_report_Oct29.json")
+        logger.info(f"  CSV数据: pause_test_results_Oct29.csv")
         
     except KeyboardInterrupt:
         logger.warning("\n测试被中断")
