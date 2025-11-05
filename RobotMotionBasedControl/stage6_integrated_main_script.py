@@ -16,7 +16,7 @@ try:
     import rospy # type: ignore
     ROS_AVAILABLE = True
 except ImportError:
-    print("警告: 未找到 ROS，某些功能不可用")
+    print("警告: 未找到 ROS, 某些功能不可用")
     ROS_AVAILABLE = False
 
 import time
