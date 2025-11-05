@@ -1,0 +1,251 @@
+{
+  "timestamp": "2025-10-27T14:21:19.099188",
+  "test_config": {
+    "repeat_count": 1,
+    "wait_after_pause": 15,
+    "timeout": 300.0
+  },
+  "total_tests": 8,
+  "results": [
+    {
+      "description": "在第100行暂停(11.7%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 100,
+      "pause_percent": 11.71,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1004.41
+      ],
+      "resume_times_ms": [
+        2371.29
+      ],
+      "total_times_ms": [
+        3375.7
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1004.41,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1004.41,
+        "pause_max_ms": 1004.41,
+        "resume_mean_ms": 2371.29,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2371.29,
+        "resume_max_ms": 2371.29,
+        "total_mean_ms": 3375.7,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第200行暂停(23.4%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 200,
+      "pause_percent": 23.42,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1016.46
+      ],
+      "resume_times_ms": [
+        2361.95
+      ],
+      "total_times_ms": [
+        3378.41
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1016.46,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1016.46,
+        "pause_max_ms": 1016.46,
+        "resume_mean_ms": 2361.95,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2361.95,
+        "resume_max_ms": 2361.95,
+        "total_mean_ms": 3378.41,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第300行暂停(35.1%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 300,
+      "pause_percent": 35.13,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1027.57
+      ],
+      "resume_times_ms": [
+        2359.17
+      ],
+      "total_times_ms": [
+        3386.74
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1027.57,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1027.57,
+        "pause_max_ms": 1027.57,
+        "resume_mean_ms": 2359.17,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2359.17,
+        "resume_max_ms": 2359.17,
+        "total_mean_ms": 3386.74,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第400行暂停(46.8%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 400,
+      "pause_percent": 46.84,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1020.43
+      ],
+      "resume_times_ms": [
+        2358.46
+      ],
+      "total_times_ms": [
+        3378.89
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1020.43,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1020.43,
+        "pause_max_ms": 1020.43,
+        "resume_mean_ms": 2358.46,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2358.46,
+        "resume_max_ms": 2358.46,
+        "total_mean_ms": 3378.89,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第500行暂停(58.5%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 500,
+      "pause_percent": 58.55,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1010.06
+      ],
+      "resume_times_ms": [
+        2344.66
+      ],
+      "total_times_ms": [
+        3354.72
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1010.06,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1010.06,
+        "pause_max_ms": 1010.06,
+        "resume_mean_ms": 2344.66,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2344.66,
+        "resume_max_ms": 2344.66,
+        "total_mean_ms": 3354.72,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第600行暂停(70.3%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 600,
+      "pause_percent": 70.26,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1024.81
+      ],
+      "resume_times_ms": [
+        2367.81
+      ],
+      "total_times_ms": [
+        3392.62
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1024.81,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1024.81,
+        "pause_max_ms": 1024.81,
+        "resume_mean_ms": 2367.81,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2367.81,
+        "resume_max_ms": 2367.81,
+        "total_mean_ms": 3392.62,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第700行暂停(82.0%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 700,
+      "pause_percent": 81.97,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1025.18
+      ],
+      "resume_times_ms": [
+        2388.04
+      ],
+      "total_times_ms": [
+        3413.22
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1025.18,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1025.18,
+        "pause_max_ms": 1025.18,
+        "resume_mean_ms": 2388.04,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2388.04,
+        "resume_max_ms": 2388.04,
+        "total_mean_ms": 3413.22,
+        "total_stdev_ms": 0
+      }
+    },
+    {
+      "description": "在第800行暂停(93.7%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 800,
+      "pause_percent": 93.68,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1016.72
+      ],
+      "resume_times_ms": [
+        2355.23
+      ],
+      "total_times_ms": [
+        3371.95
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1016.72,
+        "pause_stdev_ms": 0,
+        "pause_min_ms": 1016.72,
+        "pause_max_ms": 1016.72,
+        "resume_mean_ms": 2355.23,
+        "resume_stdev_ms": 0,
+        "resume_min_ms": 2355.23,
+        "resume_max_ms": 2355.23,
+        "total_mean_ms": 3371.95,
+        "total_stdev_ms": 0
+      }
+    }
+  ]
+}

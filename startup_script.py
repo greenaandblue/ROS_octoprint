@@ -7,7 +7,7 @@
 import sys
 import os
 from gcode_controller import GCodeController
-from config import OCTOPRINT_CONFIG
+from gcode_controller_node.config import OCTOPRINT_CONFIG
 
 def main():
     if len(sys.argv) < 2:

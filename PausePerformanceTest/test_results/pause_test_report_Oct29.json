@@ -1,0 +1,157 @@
+{
+  "timestamp": "2025-10-29T13:32:09.430677",
+  "test_config": {
+    "repeat_count": 3,
+    "wait_after_pause": 1.0,
+    "timeout": 300.0,
+    "check_interval": 0.5,
+    "stability_wait": 2.0
+  },
+  "total_tests": 4,
+  "results": [
+    {
+      "description": "在第200行暂停(23.4%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 200,
+      "pause_percent": 23.42,
+      "total_lines": 854,
+      "pause_times_ms": [
+        984.1,
+        1052.14,
+        1004.65
+      ],
+      "resume_times_ms": [
+        2741.09,
+        2364.54,
+        2353.91
+      ],
+      "total_times_ms": [
+        3725.2,
+        3416.67,
+        3358.56
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1013.63,
+        "pause_stdev_ms": 34.89,
+        "pause_min_ms": 984.1,
+        "pause_max_ms": 1052.14,
+        "resume_mean_ms": 2486.51,
+        "resume_stdev_ms": 220.54,
+        "resume_min_ms": 2353.91,
+        "resume_max_ms": 2741.09,
+        "total_mean_ms": 3500.14,
+        "total_stdev_ms": 197.05
+      }
+    },
+    {
+      "description": "在第400行暂停(46.8%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 400,
+      "pause_percent": 46.84,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1095.86,
+        1277.66,
+        1025.48
+      ],
+      "resume_times_ms": [
+        2347.93,
+        2349.65,
+        2441.11
+      ],
+      "total_times_ms": [
+        3443.79,
+        3627.31,
+        3466.58
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1133.0,
+        "pause_stdev_ms": 130.13,
+        "pause_min_ms": 1025.48,
+        "pause_max_ms": 1277.66,
+        "resume_mean_ms": 2379.56,
+        "resume_stdev_ms": 53.31,
+        "resume_min_ms": 2347.93,
+        "resume_max_ms": 2441.11,
+        "total_mean_ms": 3512.56,
+        "total_stdev_ms": 100.03
+      }
+    },
+    {
+      "description": "在第600行暂停(70.3%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 600,
+      "pause_percent": 70.26,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1030.38,
+        1035.27,
+        1702.13
+      ],
+      "resume_times_ms": [
+        2927.72,
+        2382.11,
+        2343.85
+      ],
+      "total_times_ms": [
+        3958.1,
+        3417.38,
+        4045.98
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1255.92,
+        "pause_stdev_ms": 386.43,
+        "pause_min_ms": 1030.38,
+        "pause_max_ms": 1702.13,
+        "resume_mean_ms": 2551.23,
+        "resume_stdev_ms": 326.62,
+        "resume_min_ms": 2343.85,
+        "resume_max_ms": 2927.72,
+        "total_mean_ms": 3807.15,
+        "total_stdev_ms": 340.4
+      }
+    },
+    {
+      "description": "在第800行暂停(93.7%)",
+      "dimension": "line_number",
+      "file": "test_files/file1.gcode",
+      "pause_line": 800,
+      "pause_percent": 93.68,
+      "total_lines": 854,
+      "pause_times_ms": [
+        1006.61,
+        1017.62,
+        1074.64
+      ],
+      "resume_times_ms": [
+        2350.29,
+        2802.58,
+        2939.17
+      ],
+      "total_times_ms": [
+        3356.91,
+        3820.2,
+        4013.81
+      ],
+      "errors": [],
+      "stats": {
+        "pause_mean_ms": 1032.96,
+        "pause_stdev_ms": 36.52,
+        "pause_min_ms": 1006.61,
+        "pause_max_ms": 1074.64,
+        "resume_mean_ms": 2697.35,
+        "resume_stdev_ms": 308.22,
+        "resume_min_ms": 2350.29,
+        "resume_max_ms": 2939.17,
+        "total_mean_ms": 3730.31,
+        "total_stdev_ms": 337.55
+      }
+    }
+  ]
+}

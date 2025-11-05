@@ -43,7 +43,7 @@ import os
 import threading
 import time
 from gcode_controller import GCodeController, PrinterState
-from config import OCTOPRINT_CONFIG, GCODE_CONFIG, LOG_CONFIG
+from gcode_controller_node.config import OCTOPRINT_CONFIG, GCODE_CONFIG, LOG_CONFIG
 
 def example_basic_usage():
     """基本使用示例"""
