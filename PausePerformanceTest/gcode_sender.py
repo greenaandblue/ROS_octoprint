@@ -3,6 +3,7 @@
 """
 Stage 4: Enhanced G-code Sender with Precise Pause System
 精准暂停系统 - 支持即时响应、状态保持、安全恢复
+accurate_pause_version.py == gcode_sender.py
 """
 
 import requests
