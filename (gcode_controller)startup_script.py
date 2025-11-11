@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # 这个文件要和配置文件一起跑，不能像另外两个那样单独跑，从from也能看出来
 
-# 这个是和gcode_controller一起用的，因为gcode_conytroller里面的暂停、启动等是不能喝命令行交互的
+# 这个是和gcode_controller一起用的，因为gcode_conytroller里面的暂停、启动等是不能和命令行交互的
 # 只能通过脚本调动 pause_processing()`、`resume_processing()等
 
 import sys

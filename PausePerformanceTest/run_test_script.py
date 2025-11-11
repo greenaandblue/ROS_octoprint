@@ -188,24 +188,42 @@ def main():
     parser = argparse.ArgumentParser(
         description='OctoPrint 暂停延迟测试执行脚本'
     )
+
+    CONFIG = {
+        'url': 'http://octopi.local',                    # ← 改这里：你的 OctoPrint 地址
+        'api_key': 'YOUR_API_KEY_HERE',                  # ← 改这里：你的 API Key
+        'scenario': '1',                                  # 1=不同文件大小, 2=单文件重复, both=全部
+        'gcode_dir': './gcode',                          # 放 G-code 文件的文件夹
+        'gcode_file': None,                              # 场景2用：指定单个文件
+        'repeat': 2,                                      # 重复次数
+        'wait_before_pause': 5.0,                        # 暂停前等待时间（秒）
+        'output_dir': './test_results',                  # 输出目录
+        'tolerance': 0.05,                               # 位置容限（mm）
+        'stable_count': 5,                               # 连续稳定次数
+    }
+
     
-    parser.add_argument('--url', required=True, help='OctoPrint URL (e.g., http://octopi.local)')
-    parser.add_argument('--api-key', required=True, help='OctoPrint API Key')
-    parser.add_argument('--scenario', choices=['1', '2', 'both'], default='1',
+    parser = argparse.ArgumentParser(
+        description='OctoPrint 暂停延迟测试执行脚本'
+    )
+    
+    parser.add_argument('--url', default=CONFIG['url'], help='OctoPrint URL (e.g., http://octopi.local)')
+    parser.add_argument('--api-key', default=CONFIG['api_key'], help='OctoPrint API Key')
+    parser.add_argument('--scenario', choices=['1', '2', 'both'], default=CONFIG['scenario'],
                        help='测试场景: 1=不同文件大小, 2=单文件重复, both=全部')
-    parser.add_argument('--gcode-dir', default='./gcode',
+    parser.add_argument('--gcode-dir', default=CONFIG['gcode_dir'],
                        help='G-code 文件目录')
-    parser.add_argument('--gcode-file',
+    parser.add_argument('--gcode-file', default=CONFIG['gcode_file'],
                        help='指定单个 G-code 文件（场景2使用）')
-    parser.add_argument('--repeat', type=int, default=3,
+    parser.add_argument('--repeat', type=int, default=CONFIG['repeat'],
                        help='重复次数')
-    parser.add_argument('--wait-before-pause', type=float, default=5.0,
+    parser.add_argument('--wait-before-pause', type=float, default=CONFIG['wait_before_pause'],
                        help='暂停前等待时间（秒）')
-    parser.add_argument('--output-dir', default='.',
+    parser.add_argument('--output-dir', default=CONFIG['output_dir'],
                        help='输出目录')
-    parser.add_argument('--tolerance', type=float, default=0.05,
+    parser.add_argument('--tolerance', type=float, default=CONFIG['tolerance'],
                        help='位置容限（mm）')
-    parser.add_argument('--stable-count', type=int, default=5,
+    parser.add_argument('--stable-count', type=int, default=CONFIG['stable_count'],
                        help='连续稳定次数')
     
     args = parser.parse_args()

@@ -4,6 +4,9 @@
 Stage 4: Enhanced G-code Sender with Precise Pause System
 精准暂停系统 - 支持即时响应、状态保持、安全恢复
 accurate_pause_version.py == gcode_sender.py
+改进: 等待床加热完成后再开始发送G-code
+
+#这个文件是在accurate pause ver(last verison)的基础上改的 他会等待heating bed结束后再开始发送gcode
 """
 
 import requests
@@ -36,6 +39,7 @@ class PrinterState(Enum):
     HALTED = "halted"
     PAUSING = "pausing"  # 新增：暂停中
     RESUMING = "resuming"  # 新增：恢复中
+    WAITING_BED = "waiting_bed"  # 新增：等待床加热
 
 
 class PrintState:
@@ -56,7 +60,7 @@ class PrintState:
 
 
 class GCodeSender:
-    """Stage 4 增强型G-code发送器 - 精准暂停系统"""
+    """Stage 4 增强型G-code发送器 - 精准暂停系统 + 床加热等待"""
     
     def __init__(self, octoprint_url: str, api_key: str):
         """初始化发送器"""
@@ -106,6 +110,16 @@ class GCodeSender:
         # 暂停恢复配置
         self.pause_lift_z = 5.0  # 暂停时Z轴抬升高度(mm)
         self.pause_retract = 5.0  # 暂停时回抽长度(mm)
+        
+        # 床加热等待配置 - 新增
+        # self.wait_for_bed_heating = True  # 启用床加热等待
+        # 改进：明确的属性声明，避免类型错误
+        self._is_waiting_bed_heat: bool = False
+        
+        self.bed_heating_check_interval = 2.0  # 检查间隔(秒)
+        self.bed_heating_tolerance = 5.0  # 温度容差(°C)
+        self.bed_heating_timeout = 600.0  # 最长等待时间(秒)
+        self.target_bed_temp = 0  # 目标床温
         
         # Stage 5 接口：速度控制预留
         self.speed_multiplier = 1.0  # 速度倍率
@@ -170,6 +184,65 @@ class GCodeSender:
                 time.sleep(0.5)
         
         return False
+    
+    def wait_for_bed_heating(self) -> bool:
+        """
+        等待床加热完成
+        返回True表示成功，False表示超时或出错
+        """
+        if not self.wait_for_bed_heating:
+            logger.info("跳过床加热等待（已禁用）")
+            return True
+        
+        if self.target_bed_temp <= 0:
+            logger.info("目标床温为0或未设置，跳过床加热等待")
+            return True
+        
+        logger.info(f"等待床加热至 {self.target_bed_temp}°C...")
+        self.state = PrinterState.WAITING_BED
+        
+        start_time = time.time()
+        last_log_time = start_time
+        
+        try:
+            while time.time() - start_time < self.bed_heating_timeout:
+                # 检查停止信号
+                if self.stop_event.is_set():
+                    logger.info("用户取消了床加热等待")
+                    return False
+                
+                try:
+                    # 获取当前床温度
+                    temps = self.check_temperatures_safe()
+                    bed_temp_data = temps.get('bed', {})
+                    current_temp = bed_temp_data.get('actual', 0)
+                    
+                    # 定期日志输出
+                    current_time = time.time()
+                    if current_time - last_log_time >= 5.0:
+                        elapsed = int(current_time - start_time)
+                        logger.info(f"床温度: {current_temp:.1f}°C / {self.target_bed_temp}°C (已等待 {elapsed}s)")
+                        last_log_time = current_time
+                    
+                    # 检查是否达到目标温度
+                    if current_temp >= (self.target_bed_temp - self.bed_heating_tolerance):
+                        logger.info(f"✓ 床已加热到 {current_temp:.1f}°C，开始发送G-code")
+                        return True
+                    
+                    # 等待后再检查
+                    time.sleep(self.bed_heating_check_interval)
+                    
+                except Exception as e:
+                    logger.warning(f"检查床温度时出错: {e}")
+                    time.sleep(self.bed_heating_check_interval)
+            
+            # 超时
+            logger.error(f"床加热等待超时（{self.bed_heating_timeout}s）")
+            return False
+            
+        except Exception as e:
+            logger.error(f"床加热等待过程异常: {e}")
+            return False
     
     def send_and_wait(self, command: str, wait_time: float = 0.1) -> bool:
         """
@@ -392,6 +465,28 @@ class GCodeSender:
         ready_states = ['operational', 'ready']
         return any(ready_state in state for ready_state in ready_states)
     
+    def extract_bed_temperature_from_gcode(self) -> Optional[float]:
+        """
+        从G-code文件中提取目标床温度
+        查找M140 或 M190 命令
+        """
+        bed_temp = None
+        
+        for line in self.gcode_lines[:100]:  # 只检查前100行
+            line = line.strip().upper()
+            
+            # 查找 M140 (设置床温) 或 M190 (等待床温)
+            if 'M140' in line or 'M190' in line:
+                # 提取 S参数
+                match = re.search(r'S(\d+)', line)
+                if match:
+                    bed_temp = float(match.group(1))
+                    logger.info(f"从G-code提取床温: {bed_temp}°C")
+                    return bed_temp
+        
+        logger.warning("G-code中未找到床温设置")
+        return None
+    
     def load_gcode_file(self, file_path: str) -> bool:
         """加载G-code文件到内存"""
         try:
@@ -399,6 +494,10 @@ class GCodeSender:
                 self.gcode_lines = [line.strip() for line in file]
                 self.total_lines = len(self.gcode_lines)
                 logger.info(f"✓ 文件加载完成: {self.total_lines} 行")
+                
+                # 自动提取床温度
+                self.target_bed_temp = self.extract_bed_temperature_from_gcode() or 0
+                
                 return True
         except Exception as e:
             logger.error(f"加载文件失败: {e}")
@@ -407,7 +506,7 @@ class GCodeSender:
     def sender_worker(self, file_path: str):
         """
         发送器工作线程 - Stage 4核心逻辑
-        逐条发送 + 等待确认
+        逐条发送 + 等待确认 + 床加热等待
         """
         logger.info(f"开始处理文件: {file_path}")
         
@@ -427,6 +526,13 @@ class GCodeSender:
         self.current_line_index = 0
         self.processed_lines = 0
         self.error_count = 0
+        
+        # 等待床加热 - 新增逻辑
+        if not self.wait_for_bed_heating():
+            logger.error("床加热等待失败")
+            self.state = PrinterState.ERROR
+            return
+        
         self.state = PrinterState.RUNNING
         
         try:
@@ -577,6 +683,7 @@ class GCodeSender:
             'error_count': self.error_count,
             'printer_state': self.last_printer_state,
             'saved_temperatures': self.print_state.temperatures,
+            'target_bed_temp': self.target_bed_temp,  # 新增
             'speed_multiplier': self.speed_multiplier  # Stage 5预留
         }
     
@@ -585,6 +692,11 @@ class GCodeSender:
         self.speed_multiplier = max(0.1, min(2.0, multiplier))
         logger.info(f"速度倍率设置为: {self.speed_multiplier}x")
         # 未来可以在这里发送M220命令调整打印速度
+    
+    def set_bed_temp_override(self, temp: float):
+        """手动设置床温度（覆盖G-code中的值）"""
+        self.target_bed_temp = max(0, temp)
+        logger.info(f"目标床温度已设置为: {self.target_bed_temp}°C")
     
     def close(self):
         """清理资源"""
@@ -605,7 +717,7 @@ def interactive_mode():
     sender = GCodeSender(OCTOPRINT_URL, API_KEY)
     
     print("=" * 60)
-    print("Stage 4: 精准暂停系统 v1.0")
+    print("Stage 4: 精准暂停系统 v1.1 - 支持床加热等待")
     print("=" * 60)
     print("\n新功能:")
     print("  • 逐条发送 + ok 确认机制")
@@ -613,6 +725,8 @@ def interactive_mode():
     print("  • 温度保持策略")
     print("  • 暂停时Z轴抬升 + 耗材回抽")
     print("  • 状态保存与恢复")
+    print("  • ★ 床加热完成后再开始G-code发送")
+    print("  • ★ 自动提取G-code中的目标床温")
     print("  • Stage 5速度控制接口预留")
     print("\n命令列表:")
     print("  file <path>          - 开始文件打印")
@@ -622,6 +736,7 @@ def interactive_mode():
     print("  status               - 打印机状态")
     print("  temps                - 温度信息")
     print("  progress             - 进度信息")
+    print("  setbed <temp>        - 设置目标床温度(°C) [仅在打印前有效]")
     print("  speed <multiplier>   - 设置速度倍率(0.1-2.0) [Stage 5预留]")
     print("  config               - 显示配置")
     print("  quit                 - 退出")
@@ -642,22 +757,29 @@ def interactive_mode():
                 elif command == 'file':
                     if len(cmd) > 1:
                         result = sender.start_file_print(cmd[1])
-                        print(f"{'ok' if result else '不OK'} 开始文件打印")
+                        print(f"{'✓ ok' if result else '✗ 不OK'} 开始文件打印")
+                        if result:
+                            print("  系统正在等待床加热完成...")
                     else:
                         print("请提供文件路径")
                         
                 elif command == 'pause':
                     result = sender.pause()
                     if not result:
-                        print("暂停失败，请检查状态")
+                        print("✗ 暂停失败，请检查状态")
+                    else:
+                        print("✓ 暂停成功")
                         
                 elif command == 'resume':
                     result = sender.resume()
                     if not result:
-                        print("恢复失败，请检查状态")
+                        print("✗ 恢复失败，请检查状态")
+                    else:
+                        print("✓ 恢复成功")
                         
                 elif command == 'stop':
                     sender.stop()
+                    print("✓ 已停止")
                     
                 elif command == 'status':
                     status = sender.check_printer_status()
@@ -666,18 +788,31 @@ def interactive_mode():
                 elif command == 'temps':
                     temps = sender.check_temperatures_safe()
                     print(json.dumps(temps, indent=2, ensure_ascii=False))
+                    if sender.target_bed_temp > 0:
+                        print(f"\n目标床温度: {sender.target_bed_temp}°C")
                     
                 elif command == 'progress':
                     progress = sender.get_progress()
                     print(json.dumps(progress, indent=2, ensure_ascii=False))
                     
+                elif command == 'setbed':
+                    if len(cmd) > 1:
+                        try:
+                            temp = float(cmd[1])
+                            sender.set_bed_temp_override(temp)
+                            print(f"✓ 目标床温度已设置为 {temp}°C")
+                        except ValueError:
+                            print("✗ 请输入有效的温度值")
+                    else:
+                        print("请提供温度值 (°C)")
+                        
                 elif command == 'speed':
                     if len(cmd) > 1:
                         try:
                             multiplier = float(cmd[1])
                             sender.set_speed_multiplier(multiplier)
                         except ValueError:
-                            print("请输入有效的数值 (0.1-2.0)")
+                            print("✗ 请输入有效的数值 (0.1-2.0)")
                     else:
                         print("请提供速度倍率")
                         
@@ -687,19 +822,27 @@ def interactive_mode():
                     print(f"  暂停回抽长度: {sender.pause_retract} mm")
                     print(f"  保持温度: {sender.maintain_temp_on_pause}")
                     print(f"  速度倍率: {sender.speed_multiplier}x")
+                    print(f"\n床加热等待配置:")
+                    print(f"  启用等待: {sender.wait_for_bed_heating}")
+                    print(f"  检查间隔: {sender.bed_heating_check_interval}s")
+                    print(f"  温度容差: {sender.bed_heating_tolerance}°C")
+                    print(f"  最长等待时间: {sender.bed_heating_timeout}s")
+                    print(f"  目标床温: {sender.target_bed_temp}°C")
                     print()
                     
                 else:
-                    print(f"未知命令: {command}")
+                    print(f"✗ 未知命令: {command}")
                     
             except KeyboardInterrupt:
                 print("\n正在退出...")
                 break
             except Exception as e:
-                print(f"错误: {e}")
+                print(f"✗ 错误: {e}")
     
     finally:
         sender.close()
         print("程序已退出")
-        
-#记得加上main函数，不然你跑个屁啊
+
+
+if __name__ == '__main__':
+    interactive_mode()
