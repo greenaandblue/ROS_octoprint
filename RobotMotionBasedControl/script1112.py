@@ -195,12 +195,12 @@ class Stage6IntegratedSystem:
         print(f"  里程计话题: {self.odom_topic}")
         print(f"  速度命令话题: {self.cmd_vel_topic}")
         print(f"  速度阈值: {self.speed_threshold:.4f} m/s")
-        print("\n💡 关键命令:")
+        print("\n 关键命令:")
         print("  print <file>         - 启动打印 (自动启用速度控制)")
         print("  status               - 显示系统状态")
         print("  stop                 - 停止打印")
         print("  threshold <value>    - 设置速度阈值 (m/s)")
-        print("\n📝 其他命令:")
+        print("\n 其他命令:")
         print("  pause                - 手动暂停打印")
         print("  resume               - 手动恢复打印")
         print("  debounce <time>      - 设置防抖时间 (s)")
@@ -228,11 +228,11 @@ class Stage6IntegratedSystem:
                         if arg and os.path.exists(arg):
                             self.start_printing_with_speed_control(arg, wait_for_bed=True)
                         else:
-                            print("❌ 请提供有效的文件路径")
+                            print(" 请提供有效的文件路径")
                     
                     elif command == 'status':
                         status = self.get_system_status()
-                        print("\n📊 系统状态:")
+                        print("\n 系统状态:")
                         for key, value in sorted(status.items()):
                             print(f"  {key}: {value}")
                         print()
@@ -241,13 +241,13 @@ class Stage6IntegratedSystem:
                         if self.sender.pause():
                             print("✓ 已暂停")
                         else:
-                            print("❌ 暂停失败")
+                            print("x 暂停失败")
                     
                     elif command == 'resume':
                         if self.sender.resume():
                             print("✓ 已恢复")
                         else:
-                            print("❌ 恢复失败")
+                            print("x 恢复失败")
                     
                     elif command == 'stop':
                         self.stop()
@@ -260,9 +260,9 @@ class Stage6IntegratedSystem:
                                 self.controller.set_speed_threshold(threshold)
                                 print(f"✓ 速度阈值已设置为 {threshold:.4f} m/s")
                             except ValueError:
-                                print("❌ 请输入有效的数值")
+                                print("x 请输入有效的数值")
                         else:
-                            print("❌ 请提供速度阈值")
+                            print("x 请提供速度阈值")
                     
                     elif command == 'debounce':
                         if arg:
@@ -271,18 +271,18 @@ class Stage6IntegratedSystem:
                                 self.controller.set_debounce_time(debounce)
                                 print(f"✓ 防抖时间已设置为 {debounce:.2f} s")
                             except ValueError:
-                                print("❌ 请输入有效的数值")
+                                print("x 请输入有效的数值")
                         else:
-                            print("❌ 请提供防抖时间")
+                            print("x 请提供防抖时间")
                     
                     elif command == 'logs':
                         if self.controller.log_file:
-                            print(f"📄 日志文件: {self.controller.log_file}")
+                            print(f" 日志文件: {self.controller.log_file}")
                         else:
-                            print("❌ 日志未初始化")
+                            print("x 日志未初始化")
                     
                     elif command == 'help':
-                        print("\n📖 帮助信息:")
+                        print("\n 帮助信息:")
                         print("  print <file>        - 打开文件并开始打印")
                         print("  status              - 显示当前系统状态")
                         print("  threshold <value>   - 调整速度触发阈值（默认0.04 m/s）")
@@ -290,13 +290,13 @@ class Stage6IntegratedSystem:
                         print("  使用命令时需要输入完整路径，例如: print /home/user/model.gcode\n")
                     
                     else:
-                        print(f"❌ 未知命令: {command}，输入 'help' 获取帮助")
+                        print(f"x 未知命令: {command}，输入 'help' 获取帮助")
                         
                 except KeyboardInterrupt:
                     print("\n正在退出...")
                     break
                 except Exception as e:
-                    print(f"❌ 错误: {e}")
+                    print(f"x 错误: {e}")
                     logger.exception("命令执行异常")
         
         finally:
@@ -359,7 +359,7 @@ def main():
 
 if __name__ == '__main__':
     if not ROS_AVAILABLE:
-        print("❌ 错误: Stage 6 需要在 ROS 环境中运行")
+        print(" 错误: Stage 6 需要在 ROS 环境中运行")
         print("请确保已安装 ROS 并已执行: source /opt/ros/*/setup.bash")
         sys.exit(1)
     
