@@ -11,7 +11,11 @@ Gcode Real-time Feed Rate Override Module
   • 无损修改（仅在内存中修改，不改动原始文件）
   • 边界情况处理（极低速度保护、非移动指令判别）
 """
+'''
+这个文件的问题是，我测试的时候，我在终端里输入python3 gcode_mdifier.py 和 python3 test.py，得到的结果是符合集成要求的，但不是我想要的那种。
+我希望gcode_sender.py先开始运作，然后开始打印指定的文件，然后开始运行modifier或者test，然后在暂停的时候去查看当前gcode代码，然后在终端里输入新的gcode,然后resume，然后发送新输入的gcode而不是之前的文件里原来的那个。
 
+'''
 import re
 import logging
 from enum import Enum
